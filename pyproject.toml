@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "framework"
+version = "0.1.0"
+description = ""
+authors = ["user <dolmatova3010@yandex.ru>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+django = "^5.1.4"
+psycopg2 = "^2.9.10"
+pillow = "^11.0.0"
+djangorestframework = "^3.15.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

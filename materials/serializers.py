@@ -13,11 +13,10 @@ class LessonSerializer(serializers.ModelSerializer):
         model = Lesson
         fields = '__all__'
 
-
+    def get_lesson_count(self, obj):
+        return obj.lessons.count()
 
     class Meta:
         model = Course
-        fields = '__all__'  # или укажите конкретные поля, включая 'lesson_count'
+        fields = '__all__'
 
-    def get_lesson_count(self, obj):
-        return obj.lessons.count()

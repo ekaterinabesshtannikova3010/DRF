@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from users.models import Payment
 from django.contrib.auth import get_user_model
-from courses.models import Course, Lesson
+from materials.models import Course, Lesson
 
 class Command(BaseCommand):
     help = 'Load payment data'

@@ -1,4 +1,3 @@
-# from django.contrib import admin
 from .models import User
 from django.contrib import admin
 
@@ -6,5 +5,4 @@ from django.contrib import admin
 class UserAdmin(admin.ModelAdmin):
     list_display = ('email', 'phone', 'city', 'is_staff', 'is_active')
     search_fields = ('email', 'phone', 'city')
-
 

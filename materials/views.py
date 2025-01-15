@@ -1,23 +1,69 @@
-from rest_framework import viewsets
-from rest_framework import generics
+from rest_framework import viewsets, generics
+from rest_framework.response import Response
 
 from users.models import Payment
 from .models import Course, Lesson
+from .permissions import IsModerator, IsOwnerOrReadOnly
 from .serializers import CourseSerializer, LessonSerializer, PaymentSerializer
 
 
 class CourseViewSet(viewsets.ModelViewSet):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
+    permission_classes = [IsOwnerOrReadOnly]
+    serializer_class = CourseSerializer
+    permission_classes = []
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_authenticated:
+            return Course.objects.filter(user=user)
+        return Course.objects.none()
+
+    def create(self, request, *args, **kwargs):
+        return Response({"detail": "Операция создания недоступна."}, status=403)
+
+    def perform_update(self, serializer):
+        # Логика для обновления урока
+        serializer.save()
+
+    def destroy(self, request, *args, **kwargs):
+        return Response({"detail": "Операция удаления недоступна."}, status=403)
+
+
+class LessonViewSet(viewsets.ModelViewSet):
+    queryset = Lesson.objects.all()
+    serializer_class = LessonSerializer
+    permission_classes = [IsOwnerOrReadOnly]
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_authenticated:
+            return Lesson.objects.filter(user=user)
+        return Lesson.objects.none()
+
+
+    def create(self, request, *args, **kwargs):
+        return Response({"detail": "Операция создания недоступна."}, status=403)
+
+
+    def perform_update(self, serializer):
+        # Логика для обновления урока
+        serializer.save()
+
+
+    def destroy(self, request, *args, **kwargs):
+        return Response({"detail": "Операция удаления недоступна."}, status=403)
+
 
 class LessonListCreate(generics.ListCreateAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
 
+
 class LessonDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
-
 
 
 class PaymentListView(generics.ListAPIView):

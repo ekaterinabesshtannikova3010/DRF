@@ -85,4 +85,3 @@ class PaymentListView(generics.ListAPIView):
         context = super().get_context_data(**kwargs)
         context['search_query'] = self.request.GET.get('search', '')
         return context
-

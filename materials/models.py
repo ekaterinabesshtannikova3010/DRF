@@ -1,7 +1,6 @@
 from django.db import models
 
 
-
 class Course(models.Model):
     title = models.CharField(max_length=255)
     preview = models.ImageField(upload_to='course_previews/')
@@ -31,4 +30,3 @@ class Lesson(models.Model):
     class Meta():
         verbose_name = "Урок"
         verbose_name_plural = "Уроки"
-

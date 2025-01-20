@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .validators import LinkValidator
-from users.models import Payment
+from users.models import Payment, Subscription
 from .models import Course, Lesson
 
 
@@ -11,7 +11,7 @@ class LessonSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Lesson
-        fields = ['title', 'content', 'video_link']
+        fields = ['title', 'video_link', 'description']
         validators = [LinkValidator(field='video_link')]
 
 
@@ -34,4 +34,3 @@ class CourseSerializer(serializers.ModelSerializer):
         if request and request.user.is_authenticated:
             return Subscription.objects.filter(user=request.user, course=obj).exists()
         return False
-

@@ -3,7 +3,7 @@ from rest_framework.response import Response
 
 from users.models import Payment
 from .models import Course, Lesson
-from .permissions import IsModerator, IsOwnerOrReadOnly
+from .permissions import IsOwnerOrReadOnly
 from .serializers import CourseSerializer, LessonSerializer, PaymentSerializer
 
 
@@ -21,14 +21,16 @@ class CourseViewSet(viewsets.ModelViewSet):
         return Course.objects.none()
 
     def create(self, request, *args, **kwargs):
-        return Response({"detail": "Операция создания недоступна."}, status=403)
+        return Response({"detail": "Операция создания недоступна."},
+                        status=403)
 
     def perform_update(self, serializer):
         # Логика для обновления урока
         serializer.save()
 
     def destroy(self, request, *args, **kwargs):
-        return Response({"detail": "Операция удаления недоступна."}, status=403)
+        return Response({"detail": "Операция удаления недоступна."},
+                        status=403)
 
 
 class LessonViewSet(viewsets.ModelViewSet):
@@ -42,18 +44,17 @@ class LessonViewSet(viewsets.ModelViewSet):
             return Lesson.objects.filter(user=user)
         return Lesson.objects.none()
 
-
     def create(self, request, *args, **kwargs):
-        return Response({"detail": "Операция создания недоступна."}, status=403)
-
+        return Response({"detail": "Операция создания недоступна."},
+                        status=403)
 
     def perform_update(self, serializer):
         # Логика для обновления урока
         serializer.save()
 
-
     def destroy(self, request, *args, **kwargs):
-        return Response({"detail": "Операция удаления недоступна."}, status=403)
+        return Response({"detail": "Операция удаления недоступна."},
+                        status=403)
 
 
 class LessonListCreate(generics.ListCreateAPIView):
@@ -84,3 +85,4 @@ class PaymentListView(generics.ListAPIView):
         context = super().get_context_data(**kwargs)
         context['search_query'] = self.request.GET.get('search', '')
         return context
+

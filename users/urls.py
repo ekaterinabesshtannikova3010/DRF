@@ -1,10 +1,12 @@
 from django.contrib.auth.views import LogoutView, LoginView
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from rest_framework_simplejwt.views import TokenRefreshView, TokenObtainPairView
+from rest_framework_simplejwt.views import (TokenRefreshView,
+                                            TokenObtainPairView)
 
 from users.apps import UsersConfig
-from users.views import UserCreateAPIView, UserViewSet, RegisterViewSet
+from users.views import UserCreateAPIView, UserViewSet, RegisterViewSet, SubscriptionCreateView, \
+    SubscriptionDestroyView
 
 app_name = UsersConfig.name
 router = DefaultRouter()
@@ -13,11 +15,13 @@ router.register(r'register', RegisterViewSet, basename='register')
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('token/', TokenObtainPairView.as_view(),
+         name='token_obtain_pair'),
     path('register/', UserCreateAPIView.as_view(), name='register'),
-    path('login/', LoginView.as_view(template_name="login.html"), name='login'),
-    path('logout/', LogoutView.as_view(), name= 'logout'),
-    path('token/refresh', TokenRefreshView.as_view(), name= 'token_refresh')
-    ]
-
-
+    path('login/', LoginView.as_view(template_name="login.html"),
+         name='login'),
+    path('logout/', LogoutView.as_view(), name='logout'),
+    path('token/refresh', TokenRefreshView.as_view(), name='token_refresh'),
+    path('courses/<int:course_id>/subscribe/', SubscriptionCreateView.as_view(), name='subscribe-course'),
+    path('courses/<int:course_id>/unsubscribe/', SubscriptionDestroyView.as_view(), name='unsubscribe-course'),
+]

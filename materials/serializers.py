@@ -1,13 +1,18 @@
 from rest_framework import serializers
-
+from .validators import LinkValidator
 from users.models import Payment
 from .models import Course, Lesson
 
 
 class LessonSerializer(serializers.ModelSerializer):
+    title = serializers.CharField(max_length=100)
+    description = serializers.CharField()
+    video_link = serializers.URLField(validators=[LinkValidator(field='video_link')])
+
     class Meta:
         model = Lesson
-        fields = '__all__'
+        fields = ['title', 'content', 'video_link']
+        validators = [LinkValidator(field='video_link')]
 
 
 class PaymentSerializer(serializers.ModelSerializer):
@@ -22,7 +27,11 @@ class CourseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Course
-        fields = '__all__'
+        fields = ['id', 'title', 'lesson_count']
 
     def get_lesson_count(self, obj):
-        return obj.lessons.count()
+        request = self.context.get('request')
+        if request and request.user.is_authenticated:
+            return Subscription.objects.filter(user=request.user, course=obj).exists()
+        return False
+

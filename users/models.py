@@ -33,9 +33,9 @@ class CustomUserManager(BaseUserManager):
 
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
-    phone = models.CharField(max_length=15, blank=True, null=True)  # Поле для телефона
-    city = models.CharField(max_length=50, blank=True, null=True)  # Поле для города
-    avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)  # Поле для аватарки
+    phone = models.CharField(max_length=15, blank=True, null=True)
+    city = models.CharField(max_length=50, blank=True, null=True)
+    avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)
 
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
@@ -58,16 +58,30 @@ class Payment(models.Model):
         ('transfer', 'Перевод на счет'),
     ]
 
-    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='payments')
-    payment_date = models.DateTimeField(auto_now_add=True)  # Дата оплаты
-    paid_course = models.ForeignKey(Course, null=True, blank=True, on_delete=models.SET_NULL)  # Оплаченный курс
-    paid_lesson = models.ForeignKey(Lesson, null=True, blank=True, on_delete=models.SET_NULL)  # Оплаченный урок
-    amount = models.DecimalField(max_digits=10, decimal_places=2)  # Сумма оплаты
-    payment_method = models.CharField(max_length=10, choices=PAYMENT_METHOD_CHOICES)  # Способ оплаты
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE,
+                             related_name='payments')
+    payment_date = models.DateTimeField(auto_now_add=True)
+    paid_course = models.ForeignKey(Course, null=True, blank=True,
+                                    on_delete=models.SET_NULL)
+    paid_lesson = models.ForeignKey(Lesson, null=True, blank=True,
+                                    on_delete=models.SET_NULL)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    payment_method = models.CharField(max_length=10,
+                                      choices=PAYMENT_METHOD_CHOICES)
 
     class Meta:
         verbose_name = "Платеж"
         verbose_name_plural = "Платежи"
 
     def str(self):
-        return f'Платеж {self.id} от {self.user} на сумму {self.amount} ({self.payment_method})'
+        return (f'Платеж {self.id} от {self.user} на сумму {self.amount}'
+                f' ({self.payment_method})')
+
+
+class Subscription(models.Model):
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('user', 'course')

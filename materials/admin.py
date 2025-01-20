@@ -4,7 +4,7 @@ from .models import Course, Lesson
 
 class LessonInline(admin.TabularInline):
     model = Lesson
-    extra = 1  # Количество дополнительных пустых форм для добавления новых уроков
+    extra = 1
 
 
 @admin.register(Course)

@@ -3,11 +3,12 @@ from users.models import Payment
 from django.contrib.auth import get_user_model
 from materials.models import Course, Lesson
 
+
 class Command(BaseCommand):
     help = 'Load payment data'
 
     def handle(self, *args, **kwargs):
-        user = get_user_model().objects.get(id=1)  # Получаем пользователя с ID 1
+        user = get_user_model().objects.get(id=1)
         course = Course.objects.get(id=1)  # Получаем курс с ID 1
         lesson = Lesson.objects.get(id=1)  # Получаем урок с ID 1
 

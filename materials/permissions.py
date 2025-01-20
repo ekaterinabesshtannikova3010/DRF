@@ -1,13 +1,14 @@
 from rest_framework import permissions
 
+
 class IsModerator(permissions.BasePermission):
     """
     Разрешение, позволяющее доступ только модераторам.
     """
 
     def has_permission(self, request, view):
-        # Проверяем, если пользователь аутентифицирован и принадлежит группе 'модераторы'
-        return request.user.is_authenticated and request.user.groups.filter(name='модераторы').exists()
+        return (request.user.is_authenticated and request.user.groups.filter(name='модераторы').exists())
+
 
 class IsOwnerOrReadOnly(permissions.BasePermission):
     """

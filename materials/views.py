@@ -3,6 +3,7 @@ from rest_framework.response import Response
 
 from users.models import Payment
 from .models import Course, Lesson
+from .paginators import CoursesPagination, LessonsPagination
 from .permissions import IsOwnerOrReadOnly
 from .serializers import CourseSerializer, LessonSerializer, PaymentSerializer
 
@@ -13,6 +14,14 @@ class CourseViewSet(viewsets.ModelViewSet):
     permission_classes = [IsOwnerOrReadOnly]
     serializer_class = CourseSerializer
     permission_classes = []
+    pagination_class = CoursesPagination
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        paginator = self.pagination_class()
+        paginated_courses = paginator.paginate_queryset(queryset, request)
+        serializer = self.get_serializer(paginated_courses, many=True)
+        return paginator.get_paginated_response(serializer.data)
 
     def get_queryset(self):
         user = self.request.user
@@ -37,12 +46,20 @@ class LessonViewSet(viewsets.ModelViewSet):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
     permission_classes = [IsOwnerOrReadOnly]
+    pagination_class = LessonsPagination
 
     def get_queryset(self):
         user = self.request.user
         if user.is_authenticated:
             return Lesson.objects.filter(user=user)
         return Lesson.objects.none()
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        paginator = self.pagination_class()
+        paginated_lessons = paginator.paginate_queryset(queryset, request)
+        serializer = self.get_serializer(paginated_lessons, many=True)
+        return paginator.get_paginated_response(serializer.data)
 
     def create(self, request, *args, **kwargs):
         return Response({"detail": "Операция создания недоступна."},

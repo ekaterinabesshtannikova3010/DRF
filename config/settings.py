@@ -33,7 +33,8 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'users',
     'materials',
-
+    'drf_yasg',
+    'drf_spectacular',
 ]
 
 MIDDLEWARE = [
@@ -134,9 +135,20 @@ REST_FRAMEWORK = {
         ['rest_framework_simplejwt.authentication.JWTAuthentication', ],
     'DEFAULT_PERMISSION_CLASSES':
         ['rest_framework.permissions.AllowAny', ],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
 }
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Your Project API',
+    'DESCRIPTION': 'Your project description',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    # OTHER SETTINGS
+}
+
+STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')

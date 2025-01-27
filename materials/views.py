@@ -2,12 +2,14 @@ from django.utils.decorators import method_decorator
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import viewsets, generics
 from rest_framework.response import Response
-
+from .tasks import send_course_update_email
 from users.models import Payment
 from .models import Course, Lesson
 from .paginators import CoursesPagination, LessonsPagination
 from .permissions import IsOwnerOrReadOnly
 from .serializers import CourseSerializer, LessonSerializer, PaymentSerializer
+from django.shortcuts import get_object_or_404
+from django.http import JsonResponse
 
 
 @method_decorator(name='list', decorator=swagger_auto_schema(
@@ -45,6 +47,18 @@ class CourseViewSet(viewsets.ModelViewSet):
     def destroy(self, request, *args, **kwargs):
         return Response({"detail": "Операция удаления недоступна."},
                         status=403)
+
+    def update_course(request, course_id):
+        course = get_object_or_404(Course, id=course_id)
+        # Логика обновления курса
+        course.title = request.POST.get('title', course.title)
+        course.description = request.POST.get('description', course.description)
+        course.save()
+
+        # Вызов асинхронной задачи отправки письма
+        send_course_update_email.delay(course.id)
+
+        return JsonResponse({'status': 'success', 'message': 'Курс обновлён'})
 
 
 class LessonViewSet(viewsets.ModelViewSet):
